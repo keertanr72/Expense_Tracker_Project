@@ -6,7 +6,7 @@
 </head>
 <body>
 	<h1>Sign Up</h1>
-	<form onsubmit="createUser(event)">
+	<form id="signUpFormId" onsubmit="createUser(event)">
 		<label for="userName">User Name:</label>
 		<input type="text" id="userName" name="userName" required><br><br>
 		<label for="email">Email:</label>
@@ -17,7 +17,6 @@
 		<input type="password" id="password" name="password" required><br><br>
 		<input type="submit" value="Sign Up">
 		<p>Existing User? <a href="./login.html">Log In</a></p>
-		<p id="addHere" style="color: red;"></p>
 	</form>
 	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 	<script src="../js/frontend.js"></script>
