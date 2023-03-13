@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sign Up</title>
+	<link rel="stylesheet" type="text/css" href="../css/signUp.css">
+</head>
+<body>
+	<h1>Login</h1>
+	<form onsubmit="loginUser(event)">
+		<label for="email">Email:</label>
+		<input type="email" id="email" name="email" required><br><br>
+		<label for="password">Password:</label>
+		<input type="password" id="password" name="password" required><br><br>
+		<input type="submit" value="login">
+		<p>New User? <a href="./signUp.html">Sign Up</a></p>
+        <p><a href="">Forgot Password</a></p>
+	</form>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="../js/frontend.js"></script>
+</body>
+</html>
