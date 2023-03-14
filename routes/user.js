@@ -4,9 +4,9 @@ const userController = require('../controllers/user')
 
 const router = express()
 
-router.get('/sign-up', userController.getSignUp)
+router.post('/sign-up/check-email', userController.postCheckEmail)
 
-router.post('/sign-up', userController.postSignUp)
+router.post('/sign-up', userController.postCreateUser)
 
 router.get('/login', userController.getLogin)
 

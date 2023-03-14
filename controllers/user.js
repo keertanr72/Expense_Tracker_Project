@@ -1,27 +1,27 @@
 const Sequelize = require('sequelize')
+const bcrypt = require('bcrypt')
 
 const User = require('../models/user')
 
-exports.getSignUp = async (req, res) => {
-    try{
-        const data = await User.findAll()
-        res.status(200).json(data)
-    }
-    catch(err){
-        console.log(err)
-    }
+exports.postCheckEmail = async (req, res) => {
+        const user = await User.findOne({ where: { email: req.body.email } })
+        if(user)
+        res.status(500).json(user)
+        else
+        res.status(200).json(user)
 }
 
-exports.postSignUp = async (req, res) => {
-    
+exports.postCreateUser = async (req, res) => {
     try{
-        const data = await User.create({
-            userName: req.body.userName,
-            email: req.body.email,
-            phoneNumber: req.body.phoneNumber,
-            password: req.body.password
+        bcrypt.hash(req.body.password, 10, async (err, hash) => {
+            await User.create({
+                userName: req.body.userName,
+                email: req.body.email,
+                phoneNumber: req.body.phoneNumber,
+                password: hash
+            })
+            res.status(200).json({message: 'User created successfully'})
         })
-        res.status(200).json(data)
     }
     catch(err){
         console.log(err)
@@ -35,12 +35,17 @@ exports.getLogin = async (req, res) => {
 exports.postLogin = async (req, res) => {
     try {
         const userData = await User.findAll({where: {email: req.body.email}})
-        if(userData[0].password === req.body.password){
-            res.status(200).json({userData})
-        }
-        else{
-            res.status(401).json({message: 'wrong password'})
-        }
+        bcrypt.compare(req.body.password, userData[0].password, async (err, result) => {
+            if(err){
+                res.status(500).json({message: 'Something Went wrong'})
+            }
+            if(result){
+                res.status(200).json({userData})
+            }
+            else{
+                res.status(401).json({message: 'wrong password'})
+            }
+        })
     } catch (error) {
         res.status(404).json({message: 'user not present'})
         console.log(error)
