@@ -13,6 +13,7 @@ exports.getSignUp = async (req, res) => {
 }
 
 exports.postSignUp = async (req, res) => {
+    
     try{
         const data = await User.create({
             userName: req.body.userName,
@@ -38,7 +39,7 @@ exports.postLogin = async (req, res) => {
             res.status(200).json({userData})
         }
         else{
-            res.status(403).json({message: 'wrong password'})
+            res.status(401).json({message: 'wrong password'})
         }
     } catch (error) {
         res.status(404).json({message: 'user not present'})

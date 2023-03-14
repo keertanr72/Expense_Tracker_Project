@@ -35,8 +35,8 @@ const createUser = async (event) => {
         password: password
     }
 
+    try{
     const data = await axios.post('http://localhost:3000/user/sign-up', userDetails)
-    try {
         if (data.status === 200) {
             alert('success')
             // window.location.href = "/views/html/login.html"

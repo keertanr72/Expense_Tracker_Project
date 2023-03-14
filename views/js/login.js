@@ -4,6 +4,8 @@ const loginUser = async (event) => {
 
     event.preventDefault()
 
+    document.getElementById('loginError').innerHTML = ''
+
     document.getElementById('loginSpinner').innerHTML = 
     `<strong>Loading...</strong>
     <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>`
@@ -21,8 +23,11 @@ const loginUser = async (event) => {
         console.log(check)
     } catch (error) {
         document.getElementById('loginSpinner').innerHTML = ''
-        document.getElementById('loginFormId').innerHTML += `<p style="color: red;">${error}</p>`
-        document.getElementById('loginFormId').innerHTML += `<p style="color: red;">Email and password doesn't match</p>`
-        console.log(error)
+        document.getElementById('loginError').innerHTML = `<p style="color: red;">${error}</p>`
+        if(error.response.status === 401)
+        document.getElementById('loginError').innerHTML += `<p style="color: red;">Wrong password</p>`
+        if(error.response.status === 404)
+        document.getElementById('loginError').innerHTML += `<p style="color: red;">User doesn't exist!</p>`
+        console.log(error.response.status)
     } 
 }
