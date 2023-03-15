@@ -32,7 +32,7 @@ const createUser = async (event) => {
         const data = await axios.post('http://localhost:3000/user/sign-up', userDetails)
         if (data.status === 200) {
             alert('success')
-            // window.location.href = "/views/html/login.html"
+            window.location.href = "/views/html/expense.html"
         }
     }
     catch (err) {

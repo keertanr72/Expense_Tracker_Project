@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const sequelize = require('./util/database')
 
 const userRoutes = require('./routes/user')
+const expenseRoutes = require('./routes/expense')
 
 const errorController = require('./controllers/error')
 
@@ -14,6 +15,8 @@ app.use(cors())
 app.use(bodyParser.json({extended: false}))
 
 app.use('/user', userRoutes)
+
+app.use('/expense', expenseRoutes)
 
 app.use(errorController.getError)
 

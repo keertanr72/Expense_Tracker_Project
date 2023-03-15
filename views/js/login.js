@@ -21,6 +21,7 @@ const loginUser = async (event) => {
         alert('success')
         document.getElementById('loginSpinner').innerHTML = ''
         console.log(check)
+        window.location.href = "/views/html/expense.html"
     } catch (error) {
         document.getElementById('loginSpinner').innerHTML = ''
         document.getElementById('loginError').innerHTML = `<p style="color: red;">${error}</p>`
