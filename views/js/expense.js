@@ -1,17 +1,26 @@
 const expense = async (event) => {
-    alert(event.target.category.value)
+    // alert(event.target.category.value)
     event.preventDefault()
     const amount = event.target.amount.value
     const description = event.target.description.value
     const category = event.target.category.value
     const addExpenseHere = document.getElementById('addExpenseHere')
+    const token = localStorage.getItem('token')
     const obj = {
         amount,
         description,
         category
     }
+    console.log(obj.amount)
+    console.log(obj.description)
+
+    if(!obj.amount){
+        alert('enter amount')
+        return
+    }
+     
     try {
-        currentExpense = await axios.post('http://localhost:3000/expense/create', obj)
+        currentExpense = await axios.post('http://localhost:3000/expense/create', obj, {headers: {"Authorization": token}})
         console.log(currentExpense)
         const newLine = document.createElement('p')
         newLine.innerHTML = ` ${amount} : ${description} : ${category} `
@@ -31,7 +40,8 @@ const expense = async (event) => {
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
-    const expenses = await axios.get('http://localhost:3000/expense/get-expense')
+    const token = localStorage.getItem('token')
+    const expenses = await axios.get('http://localhost:3000/expense/get-expense', {headers: {"Authorization": token}})
     const addExpenseHere = document.getElementById('addExpenseHere')
     expenses.data.forEach(expense => {
         const amount = expense.amount

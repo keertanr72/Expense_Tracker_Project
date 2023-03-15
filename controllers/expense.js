@@ -1,10 +1,9 @@
-const bcrypt = require('bcrypt')
-
 const Expense = require('../models/expense')
 
 exports.getExpense = async (req, res) => {
     try {
-        const expenses = await Expense.findAll()
+        console.log(req.user, 'getExpense')
+        const expenses = await Expense.findAll({where: {userId: req.user}})
         res.status(200).json(expenses)
     } catch (error) {
         console.log(error)
@@ -14,10 +13,12 @@ exports.getExpense = async (req, res) => {
 exports.postCreateExpense = async (req, res) => {
     const {amount, description, category} = req.body
     try {
+        console.log(req.user, 'createexpense')
         const newExpense = await Expense.create({
             amount: amount,
             description: description,
-            category: category
+            category: category,
+            userId: req.user
         })
         res.status(200).json(newExpense)
     } catch (error) {

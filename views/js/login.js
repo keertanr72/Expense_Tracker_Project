@@ -16,11 +16,10 @@ const loginUser = async (event) => {
     }
     
     try {
-        console.log(obj)
-        const check = await axios.post('http://localhost:3000/user/login', obj)
+        const userData = await axios.post('http://localhost:3000/user/login', obj)
         alert('success')
         document.getElementById('loginSpinner').innerHTML = ''
-        console.log(check)
+        localStorage.setItem('token', userData.data.token)
         window.location.href = "/views/html/expense.html"
     } catch (error) {
         document.getElementById('loginSpinner').innerHTML = ''

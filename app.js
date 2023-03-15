@@ -9,6 +9,9 @@ const expenseRoutes = require('./routes/expense')
 
 const errorController = require('./controllers/error')
 
+const Expense = require('./models/expense')
+const User = require('./models/user')
+
 const app = express()
 app.use(cors())
 
@@ -19,6 +22,9 @@ app.use('/user', userRoutes)
 app.use('/expense', expenseRoutes)
 
 app.use(errorController.getError)
+
+User.hasMany(Expense)
+Expense.belongsTo(User)
 
 sequelize
 .sync()

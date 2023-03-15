@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 const User = require('../models/user')
 
@@ -28,8 +28,8 @@ exports.postCreateUser = async (req, res) => {
     }
 }
 
-exports.getLogin = async (req, res) => {
-    
+const generateToken = (id) => {
+    return jwt.sign({userId: id}, 'secretKey')
 }
 
 exports.postLogin = async (req, res) => {
@@ -40,7 +40,7 @@ exports.postLogin = async (req, res) => {
                 res.status(500).json({message: 'Something Went wrong'})
             }
             if(result){
-                res.status(200).json({userData})
+                res.status(200).json({message: 'login successfull', token: generateToken(userData[0].id)})
             }
             else{
                 res.status(401).json({message: 'wrong password'})
