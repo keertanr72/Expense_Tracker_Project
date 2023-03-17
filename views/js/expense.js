@@ -46,6 +46,14 @@ window.addEventListener('DOMContentLoaded', async () => {
         const user = await axios.get('http://localhost:3000/user/get-info', { headers: { "Authorization": token } })
         if(user.data.isPremium){
             document.getElementById('premiumAccount').innerHTML = '<span class="premium-text">Premium Account</span>'
+            // document.getElementById('leaderboard').innerHTML = 'Leaderboard'
+            
+            const button = document.createElement("button");
+            button.innerHTML = "Leaderboard";
+            button.type = 'button'
+            button.onclick = displayLeaderboard
+            button.setAttribute("id", "leaderboardButton");
+            document.getElementById('expenseFormId').appendChild(button);
         }
         else{
             document.getElementById('premiumButton').innerHTML = 'Premium Membership'
@@ -101,3 +109,20 @@ document.getElementById('premiumButton').addEventListener('click', async (event)
         console.log(error)
     }
 })
+
+const displayLeaderboard = async () => {
+    document.querySelector('body').innerHTML += 
+    `<div id="leaderboard">
+        Leaderboard
+    </div>
+    <div id="leaderboard-text">
+        
+    </div>`
+    const users = await axios.get('http://localhost:3000/user/get-users')
+    console.log(users.data)
+    users.data.forEach((user) => {
+        document.getElementById('leaderboard-text').innerHTML +=
+        `<li>${user.userName}</li>`
+    })
+    
+}

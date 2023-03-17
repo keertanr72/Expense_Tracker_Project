@@ -4,7 +4,6 @@ const User = require('../models/user')
 const Order = require('../models/order')
 exports.purchasePremium = async (req, res) => {
     try {
-        // console.log(process.env.key_id, process.env.key_secret, req.user, '#############################################')
         const rzp = new Razorpay({
             key_id: process.env.key_id ,
             key_secret: process.env.key_secret
@@ -15,7 +14,6 @@ exports.purchasePremium = async (req, res) => {
                 console.log(err,'.........................')
                 return res.status(500).json({message: 'rzp order unsuccessfull'})
             }
-            // console.log('hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii', order)
             // await req.user.createOrder({orderId: order.id, status: 'pending'})
             await Order.create({orderId: order.id, userId: req.user.userId, status: 'pending'})
             return res.status(200).json({order, key_id: rzp.key_id})
@@ -28,10 +26,12 @@ exports.purchasePremium = async (req, res) => {
 exports.paymentSuccess = async (req, res) => {
     try {
         console.log('paymentSuccess', req.user.userId)
-        const userData = await User.findByPk(req.user.userId)
-        const orderData = await Order.findOne({where: {orderId: req.body.order_id}})
-        await userData.update({isPremium: true})
-        await orderData.update({paymentId: req.body.payment_id, status: 'success'})
+        const userData = User.findByPk(req.user.userId)
+        const orderData = Order.findOne({where: {orderId: req.body.order_id}})
+        const result = await Promise.all([userData, orderData])
+        const orderUpdate = result[1].update({paymentId: req.body.payment_id, status: 'success'})
+        const userUpdate = result[0].update({isPremium: true})
+        await Promise.all([userUpdate, orderUpdate])
         res.status(200).json({message: 'payment successfull'})
     } catch (error) {
         console.log(error)

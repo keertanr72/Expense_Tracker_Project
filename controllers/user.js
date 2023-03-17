@@ -12,9 +12,22 @@ exports.postCheckEmail = async (req, res) => {
 }
 
 exports.getInfo = async (req, res) => {
-    const userData = await User.findByPk(req.user.userId)
-    console.log('uuuuuuuuuuuuuuuserddddddddddata', userData.isPremium)
-    res.json(userData)
+    try {
+        const userData = await User.findByPk(req.user.userId)
+        console.log('uuuuuuuuuuuuuuuserddddddddddata', userData.isPremium)
+        res.json(userData)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+exports.getUsers = async (req, res) => {
+    try {
+        const users = await User.findAll()
+        res.json(users)
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 exports.postCreateUser = async (req, res) => {

@@ -55,6 +55,19 @@
     border-radius: 20px;
   }
   
+  #leaderboardButton {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 20px;
+  }
 
   div {
     font-size: 16px;
@@ -81,5 +94,31 @@
     text-shadow: 1px 1px #000;
   }
   
+  #leaderboard {
+    font-weight: bold;
+    text-align: center;
+    color: #ef710b;
+    text-shadow: 1px 1px 1px #ccc;
+    font-family: Arial, sans-serif;
+    font-size: 24px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    text-align: right;
+    margin-right: 20px;
+  }
+  
+  #leaderboard-text {
+    font-size: 16px;
+    text-align: right;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    margin-right: 20px;
+  }
+  
+  #addExpenseHere {
+    float: left;
+    margin-right: 20px;
+    margin-top: 50px;
+  }
 
   
