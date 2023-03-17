@@ -1,9 +1,10 @@
 const Expense = require('../models/expense')
+const User = require('../models/user')
 
 exports.getExpense = async (req, res) => {
     try {
         console.log(req.user, 'getExpense')
-        const expenses = await Expense.findAll({where: {userId: req.user}})
+        const expenses = await Expense.findAll({where: {userId: req.user.userId}})
         res.status(200).json(expenses)
     } catch (error) {
         console.log(error)
@@ -18,7 +19,7 @@ exports.postCreateExpense = async (req, res) => {
             amount: amount,
             description: description,
             category: category,
-            userId: req.user
+            userId: req.user.userId
         })
         res.status(200).json(newExpense)
     } catch (error) {

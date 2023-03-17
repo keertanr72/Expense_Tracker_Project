@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <title>Razorpay Checkout Form</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  </head>
+  <body>
+    <form id="checkout-form">
+      <input type="text" id="amount" name="amount" placeholder="Amount">
+      <button type="submit" id="submit-button">Pay with Razorpay</button>
+    </form>
+    <script>
+      const keyId = process.env.key_id;
+      const options = {
+        key: keyId,
+        amount: document.getElementById('amount').value * 100,
+        currency: 'INR',
+        name: 'My Company',
+        description: 'Payment for Order #1234',
+        image: 'https://www.mycompany.com/logo.png',
+        handler: function(response) {
+          // Handle successful payment
+          console.log(response);
+        },
+        prefill: {
+          name: 'John Doe',
+          email: 'johndoe@example.com',
+          phone: '9876543210'
+        }
+      };
+      const button = document.getElementById('submit-button');
+      button.onclick = function(e) {
+        e.preventDefault();
+        const rzp = new Razorpay(options);
+        rzp.open();
+      };
+    </script>
+  </body>
+</html>

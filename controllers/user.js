@@ -11,6 +11,12 @@ exports.postCheckEmail = async (req, res) => {
         res.status(200).json(user)
 }
 
+exports.getInfo = async (req, res) => {
+    const userData = await User.findByPk(req.user.userId)
+    console.log('uuuuuuuuuuuuuuuserddddddddddata', userData.isPremium)
+    res.json(userData)
+}
+
 exports.postCreateUser = async (req, res) => {
     try{
         bcrypt.hash(req.body.password, 10, async (err, hash) => {
@@ -18,7 +24,8 @@ exports.postCreateUser = async (req, res) => {
                 userName: req.body.userName,
                 email: req.body.email,
                 phoneNumber: req.body.phoneNumber,
-                password: hash
+                password: hash,
+                isPremium: false
             })
             res.status(200).json({message: 'User created successfully'})
         })
