@@ -7,6 +7,7 @@ const sequelize = require('./util/database')
 const userRoutes = require('./routes/user')
 const expenseRoutes = require('./routes/expense')
 const premiumRoutes = require('./routes/premium')
+const forgotPasswordRoutes = require('./routes/forgotPassword')
 
 const errorController = require('./controllers/error')
 
@@ -24,6 +25,8 @@ app.use('/user', userRoutes)
 app.use('/expense', expenseRoutes)
 
 app.use('/premium', premiumRoutes)
+
+app.use('/password', forgotPasswordRoutes)
 
 app.use(errorController.getError)
 

@@ -26,6 +26,16 @@
     "jsonwebtoken": "^9.0.0",
     "mysql2": "^3.1.2",
     "pug": "^3.0.2",
-    "razorpay": "^2.8.6"
-  }
+    "razorpay": "^2.8.6",
+    "sib-api-v3-sdk": "^8.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keertanr72/Expense_Tracker_Project.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/keertanr72/Expense_Tracker_Project/issues"
+  },
+  "homepage": "https://github.com/keertanr72/Expense_Tracker_Project#readme"
 }
