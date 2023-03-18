@@ -1,5 +1,7 @@
+const Sequelize = require('sequelize')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const Expense = require('../models/expense')
 
 const User = require('../models/user')
 
@@ -21,10 +23,30 @@ exports.getInfo = async (req, res) => {
     }
 }
 
-exports.getUsers = async (req, res) => {
+exports.getUsersLeaderboard = async (req, res) => {
     try {
-        const users = await User.findAll()
-        res.json(users)
+        // const usersLeaderboard = await User.findAll({
+        //     attributes: [
+        //                 'id',
+        //                 'userName',
+        //                 [Sequelize.fn('SUM', Sequelize.col('expenses.amount')), 'totalAmountSpent']
+        //               ],
+        //     include:
+        // })
+        const usersLeaderboard = await User.findAll({
+            attributes: [
+                'id',
+                'userName',
+                [Sequelize.fn('SUM', Sequelize.col('expenses.amount')), 'totalAmountSpent']
+              ],
+              include: [{
+                model: Expense,
+                attributes: []
+              }],
+              group: ['user.id'],
+              order: [['totalAmountSpent','DESC']]
+        })
+        res.json(usersLeaderboard)
     } catch (error) {
         console.log(error)
     }

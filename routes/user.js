@@ -5,7 +5,7 @@ const checkUserController = require('../controllers/checkUser')
 
 const router = express()
 
-router.get('/get-users', userController.getUsers)
+router.get('/get-users-leaderboard', userController.getUsersLeaderboard)
 
 router.get('/get-info', checkUserController.checkUser, userController.getInfo)
 

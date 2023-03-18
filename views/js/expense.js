@@ -118,11 +118,23 @@ const displayLeaderboard = async () => {
     <div id="leaderboard-text">
         
     </div>`
-    const users = await axios.get('http://localhost:3000/user/get-users')
+    try {
+        const users = await axios.get('http://localhost:3000/user/get-users-leaderboard')
     console.log(users.data)
     users.data.forEach((user) => {
-        document.getElementById('leaderboard-text').innerHTML +=
-        `<li>${user.userName}</li>`
+        if(user.totalAmountSpent){
+            document.getElementById('leaderboard-text').innerHTML +=
+            `<li>${user.userName} : ${user.totalAmountSpent}</li>`
+        }
+        else{
+            document.getElementById('leaderboard-text').innerHTML +=
+            `<li>${user.userName} : 0</li>`
+        }
+        
     })
+    } catch (error) {
+        console.log(error)
+    }
+    
     
 }
