@@ -14,13 +14,18 @@ exports.getExpense = async (req, res) => {
 exports.postCreateExpense = async (req, res) => {
     const {amount, description, category} = req.body
     try {
-        console.log(req.user, 'createexpense')
-        const newExpense = await Expense.create({
+        const newExpense = Expense.create({
             amount: amount,
             description: description,
             category: category,
             userId: req.user.userId
         })
+        let totalExpenseAmount = User.findByPk(req.user.userId, {
+            attributes: ['totalExpenseAmount']
+        })
+        let data = await Promise.all([newExpense,totalExpenseAmount])
+        data[1].totalExpenseAmount += parseInt(amount)
+        await User.update({totalExpenseAmount: data[1].totalExpenseAmount}, {where: {id: req.user.userId}})
         res.status(200).json(newExpense)
     } catch (error) {
         console.log(error)
@@ -30,7 +35,17 @@ exports.postCreateExpense = async (req, res) => {
 exports.postDeleteExpense = async (req, res) => {
     try {
         const deleteId = req.params.id
-        await Expense.destroy({where: {id: deleteId}})
+        const amount = req.query.amount
+        console.log('amount: ', amount)
+        let totalExpenseAmount = await User.findByPk(req.user.userId, {
+            attributes: ['totalExpenseAmount']
+        })
+        console.log(totalExpenseAmount.totalExpenseAmount)
+        totalExpenseAmount.totalExpenseAmount -= parseInt(amount)
+        console.log(totalExpenseAmount.totalExpenseAmount)
+        const p1 =  User.update({totalExpenseAmount: totalExpenseAmount.totalExpenseAmount}, {where: {id: req.user.userId}})
+        const p2 = Expense.destroy({where: {id: deleteId}})
+        await Promise.all([p1, p2])
     } catch (error) {
         console.log(error)
     }

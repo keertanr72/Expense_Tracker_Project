@@ -20,19 +20,7 @@ const expense = async (event) => {
 
     try {
         currentExpense = await axios.post('http://localhost:3000/expense/create', obj, { headers: { "Authorization": token } })
-        console.log(currentExpense)
-        const newLine = document.createElement('li')
-        newLine.innerHTML = ` ${amount} : ${description} : ${category} `
-        const deletebtn = document.createElement('button')
-        deletebtn.appendChild(document.createTextNode(' delete '))
-        deletebtn.id = currentExpense.data.id
-        deletebtn.style.backgroundColor = 'grey'
-        newLine.appendChild(deletebtn)
-        addExpenseHere.appendChild(newLine)
-        document.getElementById(`${deletebtn.id}`).addEventListener('click', async (event) => {
-            newLine.remove()
-            await axios.delete(`http://localhost:3000/expense/delete/${deletebtn.id}`)
-        })
+        window.location.reload()
     } catch (error) {
         console.log(error)
     }
@@ -42,12 +30,10 @@ window.addEventListener('DOMContentLoaded', async () => {
     try {
         const token = localStorage.getItem('token')
         const expenses = await axios.get('http://localhost:3000/expense/get-expense', { headers: { "Authorization": token } })
-        console.log(expenses)
+        console.log(expenses, 'expenses')
         const user = await axios.get('http://localhost:3000/user/get-info', { headers: { "Authorization": token } })
         if(user.data.isPremium){
             document.getElementById('premiumAccount').innerHTML = '<span class="premium-text">Premium Account</span>'
-            // document.getElementById('leaderboard').innerHTML = 'Leaderboard'
-            
             const button = document.createElement("button");
             button.innerHTML = "Leaderboard";
             button.type = 'button'
@@ -73,7 +59,7 @@ window.addEventListener('DOMContentLoaded', async () => {
             addExpenseHere.appendChild(newLine)
             document.getElementById(`${expense.id}`).addEventListener('click', async (event) => {
                 newLine.remove()
-                await axios.delete(`http://localhost:3000/expense/delete/${expense.id}`)
+                await axios.delete(`http://localhost:3000/expense/delete/${expense.id}/?amount=${amount}`, { headers: { "Authorization": token } })
             })
         });
     } catch (error) {
@@ -85,13 +71,13 @@ window.addEventListener('DOMContentLoaded', async () => {
 document.getElementById('premiumButton').addEventListener('click', async (event) => {
     try {
         const token = localStorage.getItem('token')
-        const membershipData = await axios.get('http://localhost:3000/purchase/premium-membership', { headers: { 'Authorization': token } })
+        const membershipData = await axios.get('http://localhost:3000/premium/purchase', { headers: { 'Authorization': token } })
         console.log(membershipData)
         const options = {
             'key': membershipData.data.key_id,
             'order_id': membershipData.data.order.id,
             'handler': async (membershipData) => {
-                await axios.post('http://localhost:3000/purchase/payment-success', {
+                await axios.post('http://localhost:3000/premium/payment-success', {
                     order_id: options.order_id,
                     payment_id: membershipData.razorpay_payment_id
                 }, {headers: {'Authorization': token}})
@@ -119,12 +105,13 @@ const displayLeaderboard = async () => {
         
     </div>`
     try {
-        const users = await axios.get('http://localhost:3000/user/get-users-leaderboard')
+        const token = localStorage.getItem('token')
+        const users = await axios.get('http://localhost:3000/premium/get-users-leaderboard', {headers: {'Authorization': token}})
     console.log(users.data)
     users.data.forEach((user) => {
-        if(user.totalAmountSpent){
+        if(user.totalExpenseAmount){
             document.getElementById('leaderboard-text').innerHTML +=
-            `<li>${user.userName} : ${user.totalAmountSpent}</li>`
+            `<li>${user.userName} : ${user.totalExpenseAmount}</li>`
         }
         else{
             document.getElementById('leaderboard-text').innerHTML +=

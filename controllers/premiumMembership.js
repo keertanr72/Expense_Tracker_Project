@@ -1,7 +1,9 @@
 const Razorpay = require('razorpay')
+const Sequelize = require('sequelize')
 require('dotenv').config()
 const User = require('../models/user')
 const Order = require('../models/order')
+const Expense = require('../models/expense')
 exports.purchasePremium = async (req, res) => {
     try {
         const rzp = new Razorpay({
@@ -11,10 +13,8 @@ exports.purchasePremium = async (req, res) => {
         const amount = 1000
         rzp.orders.create({amount: amount, currency: 'INR'}, async (err, order) => {
             if(err){
-                console.log(err,'.........................')
                 return res.status(500).json({message: 'rzp order unsuccessfull'})
             }
-            // await req.user.createOrder({orderId: order.id, status: 'pending'})
             await Order.create({orderId: order.id, userId: req.user.userId, status: 'pending'})
             return res.status(200).json({order, key_id: rzp.key_id})
         })
@@ -33,6 +33,18 @@ exports.paymentSuccess = async (req, res) => {
         const userUpdate = result[0].update({isPremium: true})
         await Promise.all([userUpdate, orderUpdate])
         res.status(200).json({message: 'payment successfull'})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+exports.getUsersLeaderboard = async (req, res) => {
+    try {
+        const usersLeaderboard = await User.findAll({
+            attributes: ['totalExpenseAmount', 'userName', 'id'],
+              order: [['totalExpenseAmount','DESC']]
+        })
+        res.json(usersLeaderboard)
     } catch (error) {
         console.log(error)
     }

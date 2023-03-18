@@ -5,8 +5,6 @@ const checkUserController = require('../controllers/checkUser')
 
 const router = express()
 
-router.get('/get-users-leaderboard', userController.getUsersLeaderboard)
-
 router.get('/get-info', checkUserController.checkUser, userController.getInfo)
 
 router.post('/sign-up/check-email', userController.postCheckEmail)

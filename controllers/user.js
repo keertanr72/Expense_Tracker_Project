@@ -23,35 +23,6 @@ exports.getInfo = async (req, res) => {
     }
 }
 
-exports.getUsersLeaderboard = async (req, res) => {
-    try {
-        // const usersLeaderboard = await User.findAll({
-        //     attributes: [
-        //                 'id',
-        //                 'userName',
-        //                 [Sequelize.fn('SUM', Sequelize.col('expenses.amount')), 'totalAmountSpent']
-        //               ],
-        //     include:
-        // })
-        const usersLeaderboard = await User.findAll({
-            attributes: [
-                'id',
-                'userName',
-                [Sequelize.fn('SUM', Sequelize.col('expenses.amount')), 'totalAmountSpent']
-              ],
-              include: [{
-                model: Expense,
-                attributes: []
-              }],
-              group: ['user.id'],
-              order: [['totalAmountSpent','DESC']]
-        })
-        res.json(usersLeaderboard)
-    } catch (error) {
-        console.log(error)
-    }
-}
-
 exports.postCreateUser = async (req, res) => {
     try{
         bcrypt.hash(req.body.password, 10, async (err, hash) => {
@@ -60,7 +31,8 @@ exports.postCreateUser = async (req, res) => {
                 email: req.body.email,
                 phoneNumber: req.body.phoneNumber,
                 password: hash,
-                isPremium: false
+                isPremium: false,
+                totalExpenseAmount: 0
             })
             res.status(200).json({message: 'User created successfully'})
         })
