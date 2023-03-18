@@ -27,12 +27,17 @@ const expense = async (event) => {
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
+        expensePageData(true)
+})
+
+const expensePageData = async (firstTime) => {
     try {
+        document.getElementById('addExpenseHere').innerHTML = ''
         const token = localStorage.getItem('token')
         const expenses = await axios.get('http://localhost:3000/expense/get-expense', { headers: { "Authorization": token } })
         console.log(expenses, 'expenses')
         const user = await axios.get('http://localhost:3000/user/get-info', { headers: { "Authorization": token } })
-        if(user.data.isPremium){
+        if(user.data.isPremium && firstTime){
             document.getElementById('premiumAccount').innerHTML = '<span class="premium-text">Premium Account</span>'
             const button = document.createElement("button");
             button.innerHTML = "Leaderboard";
@@ -41,7 +46,7 @@ window.addEventListener('DOMContentLoaded', async () => {
             button.setAttribute("id", "leaderboardButton");
             document.getElementById('expenseFormId').appendChild(button);
         }
-        else{
+        else if(!firstTime){
             document.getElementById('premiumButton').innerHTML = 'Premium Membership'
         }
         const addExpenseHere = document.getElementById('addExpenseHere')
@@ -50,6 +55,8 @@ window.addEventListener('DOMContentLoaded', async () => {
             const description = expense.description
             const category = expense.category
             const newLine = document.createElement('li')
+            // if(!print)
+            
             newLine.innerHTML = ` ${amount} : ${description} : ${category} `
             const deletebtn = document.createElement('button')
             deletebtn.appendChild(document.createTextNode(' delete '))
@@ -65,8 +72,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     } catch (error) {
         console.log(error)
     }
-
-})
+}
 
 document.getElementById('premiumButton').addEventListener('click', async (event) => {
     try {
@@ -97,6 +103,7 @@ document.getElementById('premiumButton').addEventListener('click', async (event)
 })
 
 const displayLeaderboard = async () => {
+    expensePageData(false)
     document.querySelector('body').innerHTML += 
     `<div id="leaderboard">
         Leaderboard

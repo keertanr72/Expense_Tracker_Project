@@ -1,5 +1,6 @@
 const Expense = require('../models/expense')
 const User = require('../models/user')
+const sequelize = require('../util/database')
 
 exports.getExpense = async (req, res) => {
     try {
@@ -13,22 +14,25 @@ exports.getExpense = async (req, res) => {
 
 exports.postCreateExpense = async (req, res) => {
     const {amount, description, category} = req.body
+    const transaction = await sequelize.transaction()
     try {
         const newExpense = Expense.create({
             amount: amount,
             description: description,
             category: category,
             userId: req.user.userId
-        })
+        }, {transaction})
         let totalExpenseAmount = User.findByPk(req.user.userId, {
             attributes: ['totalExpenseAmount']
         })
         let data = await Promise.all([newExpense,totalExpenseAmount])
         data[1].totalExpenseAmount += parseInt(amount)
-        await User.update({totalExpenseAmount: data[1].totalExpenseAmount}, {where: {id: req.user.userId}})
+        await User.update({totalExpenseAmount: data[1].totalExpenseAmount}, {where: {id: req.user.userId}, transaction})
+        await transaction.commit();
         res.status(200).json(newExpense)
     } catch (error) {
         console.log(error)
+        await transaction.rollback()
     }   
 }
 

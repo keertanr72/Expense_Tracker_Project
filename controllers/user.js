@@ -1,8 +1,6 @@
 const Sequelize = require('sequelize')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const Expense = require('../models/expense')
-
 const User = require('../models/user')
 
 exports.postCheckEmail = async (req, res) => {
