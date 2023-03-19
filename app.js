@@ -14,6 +14,7 @@ const errorController = require('./controllers/error')
 const Expense = require('./models/expense')
 const User = require('./models/user')
 const Order = require('./models/order')
+const ForgotPasswordRequest = require('./models/forgotPasswordRequests')
 
 const app = express()
 app.use(cors())
@@ -35,6 +36,9 @@ Expense.belongsTo(User)
 
 User.hasMany(Order)
 Order.belongsTo(User)
+
+User.hasMany(ForgotPasswordRequest)
+ForgotPasswordRequest.belongsTo(User)
 
 sequelize
 .sync()

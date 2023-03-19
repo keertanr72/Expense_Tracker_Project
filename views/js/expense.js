@@ -3,7 +3,6 @@ const expense = async (event) => {
     const amount = event.target.amount.value
     const description = event.target.description.value
     const category = event.target.category.value
-    const addExpenseHere = document.getElementById('addExpenseHere')
     const token = localStorage.getItem('token')
     const obj = {
         amount,
@@ -30,14 +29,15 @@ window.addEventListener('DOMContentLoaded', async () => {
         expensePageData(true)
 })
 
-const expensePageData = async (firstTime) => {
+const expensePageData = async (leaderboardButtonNeeded) => {
     try {
         document.getElementById('addExpenseHere').innerHTML = ''
         const token = localStorage.getItem('token')
         const expenses = await axios.get('http://localhost:3000/expense/get-expense', { headers: { "Authorization": token } })
         console.log(expenses, 'expenses')
         const user = await axios.get('http://localhost:3000/user/get-info', { headers: { "Authorization": token } })
-        if(user.data.isPremium && firstTime){
+        console.log(user.data.isPremium)
+        if(user.data.isPremium && leaderboardButtonNeeded){
             document.getElementById('premiumAccount').innerHTML = '<span class="premium-text">Premium Account</span>'
             const button = document.createElement("button");
             button.innerHTML = "Leaderboard";
@@ -46,7 +46,7 @@ const expensePageData = async (firstTime) => {
             button.setAttribute("id", "leaderboardButton");
             document.getElementById('expenseFormId').appendChild(button);
         }
-        else if(!firstTime){
+        else{
             document.getElementById('premiumButton').innerHTML = 'Premium Membership'
         }
         const addExpenseHere = document.getElementById('addExpenseHere')
@@ -106,7 +106,6 @@ const displayLeaderboard = async () => {
     expensePageData(false)
     document.querySelector('body').innerHTML += 
     `<div id="leaderboard">
-        Leaderboard
     </div>
     <div id="leaderboard-text">
         
@@ -115,6 +114,8 @@ const displayLeaderboard = async () => {
         const token = localStorage.getItem('token')
         const users = await axios.get('http://localhost:3000/premium/get-users-leaderboard', {headers: {'Authorization': token}})
     console.log(users.data)
+    document.getElementById('leaderboard').innerHTML = 'LeaderBoard'
+    document.getElementById('leaderboard-text').innerHTML = ''
     users.data.forEach((user) => {
         if(user.totalExpenseAmount){
             document.getElementById('leaderboard-text').innerHTML +=
