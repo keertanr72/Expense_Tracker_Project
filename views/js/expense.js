@@ -39,12 +39,18 @@ const expensePageData = async (leaderboardButtonNeeded) => {
         console.log(user.data.isPremium)
         if(user.data.isPremium && leaderboardButtonNeeded){
             document.getElementById('premiumAccount').innerHTML = '<span class="premium-text">Premium Account</span>'
-            const button = document.createElement("button");
-            button.innerHTML = "Leaderboard";
-            button.type = 'button'
-            button.onclick = displayLeaderboard
-            button.setAttribute("id", "leaderboardButton");
-            document.getElementById('expenseFormId').appendChild(button);
+            const leaderboardButton = document.createElement("button");
+            const downloadButton = document.createElement("button");
+            leaderboardButton.innerHTML = "Leaderboard";
+            downloadButton.innerHTML = "Download Expenses";
+            leaderboardButton.type = 'button'
+            downloadButton.type = 'button'
+            leaderboardButton.onclick = displayLeaderboard
+            downloadButton.onclick = downloadExpense
+            leaderboardButton.setAttribute("id", "leaderboardButton");
+            downloadButton.setAttribute("id", "downloadButton");
+            document.getElementById('expenseFormId').appendChild(leaderboardButton);
+            document.getElementById('expenseFormId').appendChild(downloadButton);
         }
         else{
             document.getElementById('premiumButton').innerHTML = 'Premium Membership'
@@ -124,12 +130,17 @@ const displayLeaderboard = async () => {
         else{
             document.getElementById('leaderboard-text').innerHTML +=
             `<li>${user.userName} : 0</li>`
-        }
-        
+        }  
     })
     } catch (error) {
         console.log(error)
-    }
-    
-    
+    } 
+}
+
+const downloadExpense = () => {
+    alert('hii')
+    const downloadLink = document.createElement('a');
+    downloadLink.href = fileUrl;
+    downloadLink.setAttribute('download', filename);
+    downloadLink.click();
 }
