@@ -26,7 +26,7 @@ const expense = async (event) => {
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
-        expensePageData(true)
+    expensePageData(true)
 })
 
 const expensePageData = async (leaderboardButtonNeeded) => {
@@ -37,8 +37,9 @@ const expensePageData = async (leaderboardButtonNeeded) => {
         console.log(expenses, 'expenses')
         const user = await axios.get('http://localhost:3000/user/get-info', { headers: { "Authorization": token } })
         console.log(user.data.isPremium)
-        if(user.data.isPremium && leaderboardButtonNeeded){
+        if (user.data.isPremium && leaderboardButtonNeeded) {
             document.getElementById('premiumAccount').innerHTML = '<span class="premium-text">Premium Account</span>'
+            document.getElementById('OldDownloads').innerHTML = '<button type="button" onclick="OldDownloads()">Old Downloads</button>'
             const leaderboardButton = document.createElement("button");
             const downloadButton = document.createElement("button");
             leaderboardButton.innerHTML = "Leaderboard";
@@ -52,7 +53,7 @@ const expensePageData = async (leaderboardButtonNeeded) => {
             document.getElementById('expenseFormId').appendChild(leaderboardButton);
             document.getElementById('expenseFormId').appendChild(downloadButton);
         }
-        else{
+        else {
             document.getElementById('premiumButton').innerHTML = 'Premium Membership'
         }
         const addExpenseHere = document.getElementById('addExpenseHere')
@@ -61,8 +62,6 @@ const expensePageData = async (leaderboardButtonNeeded) => {
             const description = expense.description
             const category = expense.category
             const newLine = document.createElement('li')
-            // if(!print)
-            
             newLine.innerHTML = ` ${amount} : ${description} : ${category} `
             const deletebtn = document.createElement('button')
             deletebtn.appendChild(document.createTextNode(' delete '))
@@ -92,7 +91,7 @@ document.getElementById('premiumButton').addEventListener('click', async (event)
                 await axios.post('http://localhost:3000/premium/payment-success', {
                     order_id: options.order_id,
                     payment_id: membershipData.razorpay_payment_id
-                }, {headers: {'Authorization': token}})
+                }, { headers: { 'Authorization': token } })
                 alert('You are a Premium Member!')
                 window.location.reload()
             }
@@ -110,37 +109,64 @@ document.getElementById('premiumButton').addEventListener('click', async (event)
 
 const displayLeaderboard = async () => {
     expensePageData(false)
-    document.querySelector('body').innerHTML += 
-    `<div id="leaderboard">
+    document.querySelector('body').innerHTML +=
+        `<div id="leaderboard">
     </div>
     <div id="leaderboard-text">
         
     </div>`
     try {
         const token = localStorage.getItem('token')
-        const users = await axios.get('http://localhost:3000/premium/get-users-leaderboard', {headers: {'Authorization': token}})
-    console.log(users.data)
-    document.getElementById('leaderboard').innerHTML = 'LeaderBoard'
-    document.getElementById('leaderboard-text').innerHTML = ''
-    users.data.forEach((user) => {
-        if(user.totalExpenseAmount){
-            document.getElementById('leaderboard-text').innerHTML +=
-            `<li>${user.userName} : ${user.totalExpenseAmount}</li>`
-        }
-        else{
-            document.getElementById('leaderboard-text').innerHTML +=
-            `<li>${user.userName} : 0</li>`
-        }  
-    })
+        const users = await axios.get('http://localhost:3000/premium/get-users-leaderboard', { headers: { 'Authorization': token } })
+        console.log(users.data)
+        document.getElementById('leaderboard').innerHTML = 'LeaderBoard'
+        document.getElementById('leaderboard-text').innerHTML = ''
+        users.data.forEach((user) => {
+            if (user.totalExpenseAmount) {
+                document.getElementById('leaderboard-text').innerHTML +=
+                    `<li>${user.userName} : ${user.totalExpenseAmount}</li>`
+            }
+            else {
+                document.getElementById('leaderboard-text').innerHTML +=
+                    `<li>${user.userName} : 0</li>`
+            }
+        })
     } catch (error) {
         console.log(error)
-    } 
+    }
 }
 
-const downloadExpense = () => {
+const downloadExpense = async () => {
     alert('hii')
-    const downloadLink = document.createElement('a');
-    downloadLink.href = fileUrl;
-    downloadLink.setAttribute('download', filename);
-    downloadLink.click();
+    const token = localStorage.getItem('token')
+    try {
+        const fileUrl = await axios.get('http://localhost:3000/user/download', { headers: { 'Authorization': token } })
+        const fileName = 'myExpense.txt'
+        const downloadLink = document.createElement('a');
+        downloadLink.href = fileUrl.data.fileUrl;
+        downloadLink.setAttribute('download', fileName);
+        downloadLink.click();
+    } catch (error) {
+        console.log(error)
+    }
+
+}
+
+const OldDownloads = async () => {
+    alert('dddddddddddddddd')
+    try {
+        const token = localStorage.getItem('token')
+        const urls = await axios.get('http://localhost:3000/user/old-downloads', { headers: { 'Authorization': token } })
+        console.log(urls.data)
+        const container = document.createElement('div');
+        for(let url of urls.data){
+            const paragraph = document.createElement('p');
+            const text = document.createTextNode(url.url);
+            paragraph.appendChild(text);
+            container.appendChild(paragraph);
+        }
+        document.body.appendChild(container);
+    } catch (error) {
+        console.log(error)
+    }
 }

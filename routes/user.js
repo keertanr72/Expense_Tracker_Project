@@ -5,6 +5,10 @@ const checkUserController = require('../controllers/checkUser')
 
 const router = express()
 
+router.get('/download', checkUserController.checkUser, userController.getDownloadExpense)
+
+router.get('/old-downloads', checkUserController.checkUser, userController.getOldDownloads)
+
 router.get('/get-info', checkUserController.checkUser, userController.getInfo)
 
 router.post('/sign-up/check-email', userController.postCheckEmail)

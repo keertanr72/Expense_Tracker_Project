@@ -10,12 +10,8 @@ exports.checkUser = async (req, res, next) => {
         console.log(user, user)
         await User.findByPk(user.userId)
         req.user = user
-        // res.status(200).json({message: 'user verified'})
         next()
     } catch (error) {
         console.log(error)
     }
-    
-
-
 }

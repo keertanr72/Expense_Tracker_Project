@@ -16,6 +16,7 @@
     "sequelize-cli": "^6.6.0"
   },
   "dependencies": {
+    "aws-sdk": "^2.1339.0",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
