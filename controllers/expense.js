@@ -4,11 +4,20 @@ const sequelize = require('../util/database')
 
 exports.getExpense = async (req, res) => {
     try {
+        const rowsPerPage = req.query.rowsPerPage
         const buttonNumber = req.params.buttonNumber
+        if(!rowsPerPage){
+            const expenses = await Expense.findAll({
+                where: {userId: req.user.userId},
+                offset: (buttonNumber - 1) * 10,
+                limit: 10
+            })
+            res.status(200).json(expenses)
+        }
         const expenses = await Expense.findAll({
             where: {userId: req.user.userId},
-            offset: (buttonNumber - 1) * 10,
-            limit: 10
+            offset: (buttonNumber - 1) * parseInt(rowsPerPage),
+            limit: parseInt(rowsPerPage)
         })
         res.status(200).json(expenses)
     } catch (error) {

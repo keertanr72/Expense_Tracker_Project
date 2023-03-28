@@ -1,6 +1,6 @@
 let numberOfExpenses = 0
 let globalExpenses
-
+console.log(document.getElementById('rowsPerPage').value)
 const expense = async (event) => {
     event.preventDefault()
     const amount = event.target.amount.value
@@ -103,7 +103,8 @@ const expensePageData = async (leaderboardButtonNeeded, buttonNumber) => {
         console.log(globalExpenses.data.rows)
         document.getElementById('addExpenseHere').innerHTML = ''
         const token = localStorage.getItem('token')
-        const expenses = await axios.get(`http://localhost:3000/expense/get-expense/${buttonNumber}`, { headers: { "Authorization": token } })
+        const rowsPerPage = localStorage.getItem('rowsPerPage')
+        const expenses = await axios.get(`http://localhost:3000/expense/get-expense/${buttonNumber}?rowsPerPage=${rowsPerPage}`, { headers: { "Authorization": token } })
         console.log('eeeeeeeeeeeeeexpenses', expenses.data)
         const user = await axios.get('http://localhost:3000/user/get-info', { headers: { "Authorization": token } })
         if (user.data.isPremium && leaderboardButtonNeeded) {
@@ -244,4 +245,10 @@ const OldDownloads = async () => {
     } catch (error) {
         console.log(error)
     }
+}
+
+const rowsPerPageFunction = () => {
+    const rowsPerPage = document.getElementById('rowsPerPage').value
+    console.log(rowsPerPage)
+    localStorage.setItem('rowsPerPage', rowsPerPage)
 }
