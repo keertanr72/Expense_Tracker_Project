@@ -123,6 +123,14 @@ exports.getDownloadExpense = async (req, res) => {
 }
 
 exports.getOldDownloads = async (req, res) => {
-    const urls = await ExpenseDownload.findAll({attributes: ['url'], where: {userId: req.user.userId}})
-    res.status(200).json(urls)
+    try {
+        const urls = await ExpenseDownload.findAll({
+            attributes: ['url'],
+            where: {userId: req.user.userId}
+        })
+        res.status(200).json(urls)
+    } catch (error) {
+        console.log(error)
+    }
+    
 }

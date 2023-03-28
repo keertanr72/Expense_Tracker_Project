@@ -1,3 +1,6 @@
+let numberOfExpenses = 0
+let globalExpenses
+
 const expense = async (event) => {
     event.preventDefault()
     const amount = event.target.amount.value
@@ -9,8 +12,6 @@ const expense = async (event) => {
         description,
         category
     }
-    console.log(obj.amount)
-    console.log(obj.description)
 
     if (!obj.amount) {
         alert('enter amount')
@@ -26,17 +27,85 @@ const expense = async (event) => {
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
-    expensePageData(true)
+    const buttonNumber = await pagination()
+    expensePageData(true, buttonNumber)
 })
 
-const expensePageData = async (leaderboardButtonNeeded) => {
+const pagination = async () => {
+    const token = localStorage.getItem('token')
+    const expenses = await axios.get('http://localhost:3000/expense/get-number-of-expenses', { headers: { "Authorization": token } })
+    numberOfExpenses = expenses.data.count
+    globalExpenses = expenses
+   
+    document.getElementById('pagination').innerHTML = 
+    `<ul>
+        <li><button id='prevButton' >Prev</button></li>
+        <li><button id='firstButton' >1</button></li>
+        <li><button id='secondButton'>2</button></li>
+        <li><button id='thirdButton'>3</button></li>
+        <li><button id='nextButton' >Next</button></li>
+    </ul>`
+
+    document.getElementById('firstButton').addEventListener('click', firstButtonFunction)
+
+    document.getElementById('secondButton').addEventListener('click', secondButtonFunction)
+
+    document.getElementById('thirdButton').addEventListener('click', thirdButtonFunction)
+
+    document.getElementById('nextButton').addEventListener('click', nextFunction)
+
+    document.getElementById('prevButton').addEventListener('click', prevFunction)
+  
+    return 1
+}
+
+const firstButtonFunction = async () => {
+    const buttonNumber = document.getElementById('pagination').getElementsByTagName('button')[1].innerHTML 
+    alert(`${buttonNumber}`)
+    await expensePageData(false, buttonNumber)
+}
+
+const secondButtonFunction = async () => {
+    const buttonNumber = document.getElementById('pagination').getElementsByTagName('button')[2].innerHTML 
+    alert(`${buttonNumber}`)
+    await expensePageData(false, buttonNumber)
+}
+
+const thirdButtonFunction = async () => {
+    const buttonNumber = document.getElementById('pagination').getElementsByTagName('button')[3].innerHTML 
+    alert(`${buttonNumber}`)
+    await expensePageData(false, buttonNumber)
+}
+
+const nextFunction = () => {
+    if(numberOfExpenses/10 <= document.getElementById('pagination').getElementsByTagName('button')[3].innerHTML){
+        return
+    }
+    document.getElementById('pagination').getElementsByTagName('button')[1].innerHTML = parseInt(document.getElementById('pagination').getElementsByTagName('button')[1].innerHTML) + 1
+    document.getElementById('pagination').getElementsByTagName('button')[2].innerHTML = parseInt(document.getElementById('pagination').getElementsByTagName('button')[2].innerHTML) + 1
+    document.getElementById('pagination').getElementsByTagName('button')[3].innerHTML = parseInt(document.getElementById('pagination').getElementsByTagName('button')[3].innerHTML) + 1
+}
+
+const prevFunction = () => {
+    if(document.getElementById('pagination').getElementsByTagName('button')[1].innerHTML == 1){
+        return
+    }
+    document.getElementById('pagination').getElementsByTagName('button')[1].innerHTML = parseInt(document.getElementById('pagination').getElementsByTagName('button')[1].innerHTML) - 1
+    document.getElementById('pagination').getElementsByTagName('button')[2].innerHTML = parseInt(document.getElementById('pagination').getElementsByTagName('button')[2].innerHTML) - 1
+    document.getElementById('pagination').getElementsByTagName('button')[3].innerHTML = parseInt(document.getElementById('pagination').getElementsByTagName('button')[3].innerHTML) - 1
+    console.log('hello')
+}
+
+const expensePageData = async (leaderboardButtonNeeded, buttonNumber) => {
     try {
+        console.log('button number', buttonNumber)
+        console.log(globalExpenses.data.count)
+        console.log(globalExpenses.data.rows)
         document.getElementById('addExpenseHere').innerHTML = ''
         const token = localStorage.getItem('token')
-        const expenses = await axios.get('http://localhost:3000/expense/get-expense', { headers: { "Authorization": token } })
-        console.log(expenses, 'expenses')
+        const expenses = await axios.get(`http://localhost:3000/expense/get-expense/${buttonNumber}`, { headers: { "Authorization": token } })
+        console.log('eeeeeeeeeeeeeexpenses', expenses.data)
         const user = await axios.get('http://localhost:3000/user/get-info', { headers: { "Authorization": token } })
-        console.log(user.data.isPremium)
         if (user.data.isPremium && leaderboardButtonNeeded) {
             document.getElementById('premiumAccount').innerHTML = '<span class="premium-text">Premium Account</span>'
             document.getElementById('OldDownloads').innerHTML = '<button type="button" onclick="OldDownloads()">Old Downloads</button>'
@@ -57,6 +126,7 @@ const expensePageData = async (leaderboardButtonNeeded) => {
             document.getElementById('premiumButton').innerHTML = 'Premium Membership'
         }
         const addExpenseHere = document.getElementById('addExpenseHere')
+       
         expenses.data.forEach(expense => {
             const amount = expense.amount
             const description = expense.description
@@ -74,6 +144,8 @@ const expensePageData = async (leaderboardButtonNeeded) => {
                 await axios.delete(`http://localhost:3000/expense/delete/${expense.id}/?amount=${amount}`, { headers: { "Authorization": token } })
             })
         });
+        console.log(numberOfExpenses)
+        
     } catch (error) {
         console.log(error)
     }
@@ -153,17 +225,20 @@ const downloadExpense = async () => {
 }
 
 const OldDownloads = async () => {
-    alert('dddddddddddddddd')
+    alert('success')
     try {
         const token = localStorage.getItem('token')
         const urls = await axios.get('http://localhost:3000/user/old-downloads', { headers: { 'Authorization': token } })
         console.log(urls.data)
         const container = document.createElement('div');
         for(let url of urls.data){
+            const link = document.createElement('a')
             const paragraph = document.createElement('p');
             const text = document.createTextNode(url.url);
             paragraph.appendChild(text);
-            container.appendChild(paragraph);
+            link.href = url.url
+            link.appendChild(paragraph)
+            container.appendChild(link);
         }
         document.body.appendChild(container);
     } catch (error) {

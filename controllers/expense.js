@@ -4,7 +4,21 @@ const sequelize = require('../util/database')
 
 exports.getExpense = async (req, res) => {
     try {
-        const expenses = await Expense.findAll({where: {userId: req.user.userId}})
+        const buttonNumber = req.params.buttonNumber
+        const expenses = await Expense.findAll({
+            where: {userId: req.user.userId},
+            offset: (buttonNumber - 1) * 10,
+            limit: 10
+        })
+        res.status(200).json(expenses)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+exports.getNumberOfExpenses = async (req, res) => {
+    try {
+        const expenses = await Expense.findAndCountAll({where: {userId: req.user.userId}})
         res.status(200).json(expenses)
     } catch (error) {
         console.log(error)
@@ -45,7 +59,8 @@ exports.postDeleteExpense = async (req, res) => {
         totalExpenseAmount.totalExpenseAmount -= parseInt(amount)
         const p1 =  User.update({totalExpenseAmount: totalExpenseAmount.totalExpenseAmount}, {where: {id: req.user.userId}})
         const p2 = Expense.destroy({where: {id: deleteId}})
-        await Promise.all([p1, p2])
+        const response = await Promise.all([p1, p2])
+        res.json({response})
     } catch (error) {
         console.log(error)
     }
