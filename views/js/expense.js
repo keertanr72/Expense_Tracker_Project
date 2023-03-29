@@ -251,4 +251,5 @@ const rowsPerPageFunction = () => {
     const rowsPerPage = document.getElementById('rowsPerPage').value
     console.log(rowsPerPage)
     localStorage.setItem('rowsPerPage', rowsPerPage)
+    window.location.reload()
 }
