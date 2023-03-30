@@ -5,8 +5,7 @@ const helmet = require('helmet')
 const compression = require('compression')
 const morgan = require('morgan')
 const cors = require('cors')
-const bodyParser = require('body-parser') 
-
+const bodyParser = require('body-parser')
 const sequelize = require('./util/database')
 
 const userRoutes = require('./routes/user')
