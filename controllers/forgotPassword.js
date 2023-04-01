@@ -27,7 +27,7 @@ exports.postForgotPassword = async (req, res) => {
             to: receivers,
             subject: 'From Expense Tracker',
             textContent:
-                `Click this for new password: http://localhost:3000/password/forgot-password/${idOfForgotPassword}`
+                `Click this for new password: http://3.84.222.111:3000/password/forgot-password/${idOfForgotPassword}`
         })
         const userData = User.findOne({ where: { email: userEmail } })
         const returnedPromise = await Promise.all([p1, userData])

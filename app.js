@@ -43,6 +43,10 @@ app.use('/premium', premiumRoutes)
 
 app.use('/password', forgotPasswordRoutes)
 
+app.use((req, res) => {
+    res.sendFile(path.join(__dirname, `public/views/html/${req.url}`))
+})
+
 app.use(errorController.getError)
 
 User.hasMany(Expense)
