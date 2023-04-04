@@ -43,9 +43,10 @@ app.use('/premium', premiumRoutes)
 
 app.use('/password', forgotPasswordRoutes)
 
-app.get('/css/:something', function(req, res) {
+app.get('/:fileType/:something', function(req, res) {
     const something = req.params.something
-    res.sendFile(__dirname + `/public/css/${something}`, { protocol: 'http' });
+    const fileType = req.params.fileType
+    res.sendFile(__dirname + `/public/views/${fileType}/${something}`, { protocol: 'http' });
   });
 
 app.use((req, res) => {
