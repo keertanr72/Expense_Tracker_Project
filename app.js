@@ -50,7 +50,8 @@ app.use('/password', forgotPasswordRoutes)
 //   });
 
 app.use((req, res) => {
-    res.sendFile(path.join(__dirname, `public/views/${req.url}`), { protocol: 'http' })
+    console.log(__dirname)
+    res.sendFile(path.join(__dirname, `public/views/${req.url}`))
 })
 
 app.use(errorController.getError)
