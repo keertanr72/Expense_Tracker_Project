@@ -50,8 +50,8 @@ app.use('/password', forgotPasswordRoutes)
 //   });
 
 app.use((req, res) => {
-    console.log(__dirname)
-    res.sendFile(path.join(__dirname, `public/views/${req.url}`))
+    console.log('http:/', __dirname, `public/views/${req.url}`)
+    res.sendFile(path.join('http:/' ,__dirname, `public/views/${req.url}`))
 })
 
 app.use(errorController.getError)
