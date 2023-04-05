@@ -20,7 +20,7 @@ const loginUser = async (event) => {
         alert('success')
         document.getElementById('loginSpinner').innerHTML = ''
         localStorage.setItem('token', userData.data.token)
-        window.location.href = "/views/html/expense.html"
+        window.location.href = "/public/views/html/expense.html"
     } catch (error) {
         document.getElementById('loginSpinner').innerHTML = ''
         document.getElementById('loginError').innerHTML = `<p style="color: red;">${error}</p>`
