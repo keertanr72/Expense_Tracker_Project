@@ -61,6 +61,10 @@ exports.getInfo = async (req, res) => {
 exports.postCreateUser = async (req, res) => {
     try {
         bcrypt.hash(req.body.password, 10, async (err, hash) => {
+            if(err){
+                console.log(err)
+                res.status(404).json({success: 'fail'})
+            }
             await User.create({
                 userName: req.body.userName,
                 email: req.body.email,

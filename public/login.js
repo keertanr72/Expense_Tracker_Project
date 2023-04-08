@@ -16,11 +16,12 @@ const loginUser = async (event) => {
     }
     
     try {
-        const userData = await axios.post('http://3.84.222.111:3000/user/login', obj)
+        const userData = await axios.post('http://localhost:3000/user/login', obj)
         alert('success')
         document.getElementById('loginSpinner').innerHTML = ''
         localStorage.setItem('token', userData.data.token)
-        window.location.href = "/public/views/html/expense.html"
+        localStorage.setItem('rowsPerPage', 10)
+        window.location.href = "/public/expense.html"
     } catch (error) {
         document.getElementById('loginSpinner').innerHTML = ''
         document.getElementById('loginError').innerHTML = `<p style="color: red;">${error}</p>`

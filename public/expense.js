@@ -19,7 +19,7 @@ const expense = async (event) => {
     }
 
     try {
-        currentExpense = await axios.post('http://3.84.222.111:3000/expense/create', obj, { headers: { "Authorization": token } })
+        currentExpense = await axios.post('http://localhost:3000/expense/create', obj, { headers: { "Authorization": token } })
         window.location.reload()
     } catch (error) {
         console.log(error)
@@ -33,7 +33,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 const pagination = async () => {
     const token = localStorage.getItem('token')
-    const expenses = await axios.get('http://3.84.222.111:3000/expense/get-number-of-expenses', { headers: { "Authorization": token } })
+    const expenses = await axios.get('http://localhost:3000/expense/get-number-of-expenses', { headers: { "Authorization": token } })
     numberOfExpenses = expenses.data.count
     globalExpenses = expenses
    
@@ -78,7 +78,9 @@ const thirdButtonFunction = async () => {
 }
 
 const nextFunction = () => {
-    if(numberOfExpenses/10 <= document.getElementById('pagination').getElementsByTagName('button')[3].innerHTML){
+    alert('next')
+    const rowsPerPage = parseInt(localStorage.getItem('rowsPerPage'))
+    if(numberOfExpenses/rowsPerPage <= parseInt(document.getElementById('pagination').getElementsByTagName('button')[3].innerHTML)){
         return
     }
     document.getElementById('pagination').getElementsByTagName('button')[1].innerHTML = parseInt(document.getElementById('pagination').getElementsByTagName('button')[1].innerHTML) + 1
@@ -104,9 +106,9 @@ const expensePageData = async (leaderboardButtonNeeded, buttonNumber) => {
         document.getElementById('addExpenseHere').innerHTML = ''
         const token = localStorage.getItem('token')
         const rowsPerPage = localStorage.getItem('rowsPerPage')
-        const expenses = await axios.get(`http://3.84.222.111:3000/expense/get-expense/${buttonNumber}?rowsPerPage=${rowsPerPage}`, { headers: { "Authorization": token } })
+        const expenses = await axios.get(`http://localhost:3000/expense/get-expense/${buttonNumber}?rowsPerPage=${rowsPerPage}`, { headers: { "Authorization": token } })
         console.log('eeeeeeeeeeeeeexpenses', expenses.data)
-        const user = await axios.get('http://3.84.222.111:3000/user/get-info', { headers: { "Authorization": token } })
+        const user = await axios.get('http://localhost:3000/user/get-info', { headers: { "Authorization": token } })
         if (user.data.isPremium && leaderboardButtonNeeded) {
             document.getElementById('premiumAccount').innerHTML = '<span class="premium-text">Premium Account</span>'
             document.getElementById('OldDownloads').innerHTML = '<button type="button" onclick="OldDownloads()">Old Downloads</button>'
@@ -142,7 +144,7 @@ const expensePageData = async (leaderboardButtonNeeded, buttonNumber) => {
             addExpenseHere.appendChild(newLine)
             document.getElementById(`${expense.id}`).addEventListener('click', async (event) => {
                 newLine.remove()
-                await axios.delete(`http://3.84.222.111:3000/expense/delete/${expense.id}/?amount=${amount}`, { headers: { "Authorization": token } })
+                await axios.delete(`http://localhost:3000/expense/delete/${expense.id}/?amount=${amount}`, { headers: { "Authorization": token } })
             })
         });
         console.log(numberOfExpenses)
@@ -155,13 +157,13 @@ const expensePageData = async (leaderboardButtonNeeded, buttonNumber) => {
 document.getElementById('premiumButton').addEventListener('click', async (event) => {
     try {
         const token = localStorage.getItem('token')
-        const membershipData = await axios.get('http://3.84.222.111:3000/premium/purchase', { headers: { 'Authorization': token } })
+        const membershipData = await axios.get('http://localhost:3000/premium/purchase', { headers: { 'Authorization': token } })
         console.log(membershipData)
         const options = {
             'key': membershipData.data.key_id,
             'order_id': membershipData.data.order.id,
             'handler': async (membershipData) => {
-                await axios.post('http://3.84.222.111:3000/premium/payment-success', {
+                await axios.post('http://localhost:3000/premium/payment-success', {
                     order_id: options.order_id,
                     payment_id: membershipData.razorpay_payment_id
                 }, { headers: { 'Authorization': token } })
@@ -190,7 +192,7 @@ const displayLeaderboard = async () => {
     </div>`
     try {
         const token = localStorage.getItem('token')
-        const users = await axios.get('http://3.84.222.111:3000/premium/get-users-leaderboard', { headers: { 'Authorization': token } })
+        const users = await axios.get('http://localhost:3000/premium/get-users-leaderboard', { headers: { 'Authorization': token } })
         console.log(users.data)
         document.getElementById('leaderboard').innerHTML = 'LeaderBoard'
         document.getElementById('leaderboard-text').innerHTML = ''
@@ -213,7 +215,7 @@ const downloadExpense = async () => {
     alert('hii')
     const token = localStorage.getItem('token')
     try {
-        const fileUrl = await axios.get('http://3.84.222.111:3000/user/download', { headers: { 'Authorization': token } })
+        const fileUrl = await axios.get('http://localhost:3000/user/download', { headers: { 'Authorization': token } })
         const fileName = 'myExpense.txt'
         const downloadLink = document.createElement('a');
         downloadLink.href = fileUrl.data.fileUrl;
@@ -229,7 +231,7 @@ const OldDownloads = async () => {
     alert('success')
     try {
         const token = localStorage.getItem('token')
-        const urls = await axios.get('http://3.84.222.111:3000/user/old-downloads', { headers: { 'Authorization': token } })
+        const urls = await axios.get('http://localhost:3000/user/old-downloads', { headers: { 'Authorization': token } })
         console.log(urls.data)
         const container = document.createElement('div');
         for(let url of urls.data){

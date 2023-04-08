@@ -49,10 +49,14 @@ app.use('/password', forgotPasswordRoutes)
 //     res.sendFile(__dirname + `/public/views/${fileType}/${something}`, { protocol: 'http' });
 //   });
 
-app.use((req, res) => {
-    console.log(__dirname, `public/views/${req.url}`)
-    res.sendFile(path.join(__dirname, `public/views/${req.url}`))
-})
+// app.use((req, res) => {
+//     console.log(__dirname, `public/views/${req.url}`)
+//     res.sendFile(path.join(__dirname, `public/views/${req.url}`))
+// })
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+// app.use(express.static(path.join(__dirname, `public/views/${req.url}`)));
 
 app.use(errorController.getError)
 

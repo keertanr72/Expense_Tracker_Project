@@ -49,3 +49,12 @@ exports.getUsersLeaderboard = async (req, res) => {
         console.log(error)
     }
 }
+
+exports.forgetPassword = async (req, res) => {
+    try {
+        const user = req.params.userId
+        await User.update()
+    } catch (error) {
+        
+    }
+}
